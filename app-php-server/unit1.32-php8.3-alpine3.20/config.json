@@ -1,0 +1,49 @@
+{
+  "listeners": {
+    "*:80": {
+      "pass": "routes/app"
+    }
+  },
+
+  "routes": {
+    "app": [
+      {
+        "match": {
+          "uri": ["*.php", "*.php/*"]
+        },
+
+        "action": {
+          "pass": "applications/default/direct"
+        }
+      },
+      {
+        "action": {
+          "share": "/var/www/html$uri",
+          "fallback": {
+            "pass": "applications/default/index"
+          }
+        }
+      }
+    ]
+  },
+
+  "applications": {
+    "default": {
+      "type": "php",
+      "processes": 20,
+      "targets": {
+        "direct": {
+          "root": "/var/www/html/"
+        },
+
+        "index": {
+          "root": "/var/www/html/",
+          "script": "index.php"
+        }
+      },
+      "options": {
+        "file": "/usr/local/etc/php/conf.d/php.ini"
+      }
+    }
+  }
+}
