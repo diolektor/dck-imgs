@@ -7,7 +7,7 @@ FROM composer:${COMPOSER_VERSION} AS composer
 
 
 # BASE IMAGE
-FROM diolektor/nginx-unit-php:unit1.32-php8.3-alpine3.20 AS base
+FROM diolektor/nginx-unit-php:unit1.32.1-php8.3.9-alpine3.20 AS base
 
 RUN apk update && apk upgrade --no-cache
 

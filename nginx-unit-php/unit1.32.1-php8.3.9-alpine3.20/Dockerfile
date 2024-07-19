@@ -1,4 +1,4 @@
-FROM diolektor/php-cli-embed:php8.3-alpine3.20 AS builder
+FROM diolektor/php-cli-embed:php8.3.9-alpine3.20 AS builder
 
 RUN apk add --no-cache curl unzip dpkg-dev build-base musl musl-utils dpkg
 
@@ -71,7 +71,7 @@ EXPOSE 80
 CMD ["unitd", "--no-daemon", "--control", "unix:/var/run/control.unit.sock"]
 
 
-FROM diolektor/php-cli-embed:php8.3-alpine3.20 AS base
+FROM diolektor/php-cli-embed:php8.3.9-alpine3.20 AS base
 
 RUN apk update && apk upgrade --no-cache
 
