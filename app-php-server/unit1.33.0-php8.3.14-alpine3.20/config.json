@@ -1,7 +1,12 @@
 {
   "listeners": {
     "*:80": {
-      "pass": "routes/app"
+      "pass": "routes/app",
+      "forwarded": {
+        "client_ip": "X-Forwarded-For",
+        "recursive": true,
+        "source": ["0.0.0.0/0"]
+      }
     }
   },
 
@@ -9,7 +14,7 @@
     "app": [
       {
         "match": {
-          "uri": ["*.php", "*.php/*"]
+          "uri": "!/index.php"
         },
 
         "action": {
@@ -35,7 +40,6 @@
         "direct": {
           "root": "/var/www/html/"
         },
-
         "index": {
           "root": "/var/www/html/",
           "script": "index.php"
@@ -43,7 +47,15 @@
       },
       "options": {
         "file": "/usr/local/etc/php/conf.d/php.ini"
+      },
+      "limits": {
+        "requests": 50000,
+        "timeout": 30
       }
     }
+  },
+
+  "access_log": {
+    "path": "/dev/stdout"
   }
 }

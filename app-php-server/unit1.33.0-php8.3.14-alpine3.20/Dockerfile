@@ -1,21 +1,19 @@
 ARG COMPOSER_VERSION=latest
-ARG PHP_EXTENSION_INSTALLER_VERSION=latest
-
-FROM mlocati/php-extension-installer:${PHP_EXTENSION_INSTALLER_VERSION} AS php_extension_installer
 
 FROM composer:${COMPOSER_VERSION} AS composer
 
 
 # BASE IMAGE
-FROM diolektor/nginx-unit-php:unit1.32.1-php8.3.9-alpine3.20 AS base
+FROM diolektor/nginx-unit-php:unit1.33.0-php8.3.14-alpine3.20 AS base
 
-RUN apk update && apk upgrade --no-cache
+RUN apk add --update linux-headers && apk update && apk upgrade --no-cache
 
 ARG TIMEZONE="UTC"
 
 RUN apk add --no-cache curl unzip file
 
-COPY --from=php_extension_installer /usr/bin/install-php-extensions /usr/local/bin/
+ADD --chmod=0755 https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+
 # install php extentions
 RUN install-php-extensions opcache exif gd intl pdo_mysql pdo_pgsql zip redis pcntl
 
@@ -35,7 +33,7 @@ RUN echo "expose_php=off" > $PHP_INI_DIR/conf.d/expose.ini
 COPY config.json /docker-entrypoint.d/config.json
 
 # setup composer
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --link --from=composer /usr/bin/composer /usr/bin/composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN set -eux \
     ; composer clear-cache
